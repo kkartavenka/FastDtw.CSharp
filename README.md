@@ -26,6 +26,30 @@ FastDtw.CSharp.Dtw.GetScoreF(seriesA, seriesB)
 
 ## Performance results
 
+### Short summary
+
+|                    Method | BenchmarkSequenceLength | Ratio | Alloc Ratio |
+|-------------------------- |------------------------ |------:|------------:|
+|                   FastDtw |               8163x8089 |  1.00 |        1.00 |
+|                      NDtw |               8163x8089 |  2.94 |        3.99 |
+|   FastDtw.CSharp (double) |               8163x8089 |  **0.62** |        1.00 |
+|    FastDtw.CSharp (float) |               8163x8089 |  **0.47** |        0.50 |
+|            ADN.TimeSeries |               8163x8089 |     ? |           ? |
+|                           |                         |                    |                  |	
+|                   FastDtw |                   10x10 |  1.00 |        1.00 |
+|                      NDtw |                   10x10 |  1.09 |        2.11 |
+|   FastDtw.CSharp (double) |                   10x10 |  **0.26** |        0.56 |
+|    FastDtw.CSharp (float) |                   10x10 |  **0.25** |        0.37 |
+|            ADN.TimeSeries |                   10x10 |  2.86 |        0.77 |
+|                           |                         |       |             |
+|                   FastDtw |                 500x500 |  1.00 |        1.00 |
+|                      NDtw |                 500x500 |  1.88 |        3.88 |
+|   FastDtw.CSharp (double) |                 500x500 |  **0.31** |        0.97 |
+|    FastDtw.CSharp (float) |                 500x500 |  **0.28** |        0.49 |
+|            ADN.TimeSeries |                 500x500 |  5.11 |        1.92 |
+
+
+### Full reults
 
 |                    Method | BenchmarkSequenceLength |               Mean |            Error |           StdDev | Ratio | RatioSD |        Gen0 |        Gen1 |      Gen2 |    Allocated | Alloc Ratio |
 |-------------------------- |------------------------ |-------------------:|-----------------:|-----------------:|------:|--------:|------------:|------------:|----------:|-------------:|------------:|
