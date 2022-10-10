@@ -31,7 +31,7 @@ FastDtw.CSharp.Dtw.GetScoreF(seriesA, seriesB)
 
 ## Performance results
 
-At the time of investigating `FastDtw` (v 1.1.3) package was the fastest one, and therefore was used as a baseline. `ADN.TimeSeries` was not able to process large dataset without errors. Compared to FastDtw v 1.1.3 a significant improvement was achieved for short and long time series. 
+At the time of investigating `FastDtw` (v 1.1.3) package was the fastest one, and therefore was used as a baseline. `ADN.TimeSeries` was not able to process larger dataset without errors. Compared to FastDtw v 1.1.3 a significant improvement was achieved for short and long time series. 
 
 ### Short summary
 
