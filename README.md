@@ -4,6 +4,11 @@ Fast Dynamic Time Warping (DTW) algorithm implementation in .NET C# focusing on 
 
 Reference: [Fast DTW: Toward Accurate Dynamic Time Warping in Linear Time and and Space](https://cs.fit.edu/~pkc/papers/tdm04.pdf) 
 
+Further development:
+
+- Add to nuget repository
+- Add constrains
+
 ## Usage
 
 For double precision results:
@@ -26,9 +31,11 @@ FastDtw.CSharp.Dtw.GetScoreF(seriesA, seriesB)
 
 ## Performance results
 
+At the time of investigating `FastDtw` (v 1.1.3) package was the fastest one, and therefore was used as a baseline. `ADN.TimeSeries` was not able to process large dataset without errors. Compared to FastDtw v 1.1.3 a significant improvement was achieved for short and long time series. 
+
 ### Short summary
 
-|                    Method | BenchmarkSequenceLength | Ratio | Alloc Ratio |
+|                    Method | Time series lengthes | Ratio | Alloc Ratio |
 |-------------------------- |------------------------ |------:|------------:|
 |                   FastDtw |               8163x8089 |  1.00 |        1.00 |
 |                      NDtw |               8163x8089 |  2.94 |        3.99 |
@@ -51,7 +58,7 @@ FastDtw.CSharp.Dtw.GetScoreF(seriesA, seriesB)
 
 ### Full reults
 
-|                    Method | BenchmarkSequenceLength |               Mean |            Error |           StdDev | Ratio | RatioSD |        Gen0 |        Gen1 |      Gen2 |    Allocated | Alloc Ratio |
+|                    Method | Time series lengthes |               Mean |            Error |           StdDev | Ratio | RatioSD |        Gen0 |        Gen1 |      Gen2 |    Allocated | Alloc Ratio |
 |-------------------------- |------------------------ |-------------------:|-----------------:|-----------------:|------:|--------:|------------:|------------:|----------:|-------------:|------------:|
 |                   FastDtw |               8163x8089 |   624,484,657.1 ns |  4,331,375.65 ns |  3,839,651.70 ns |  1.00 |    0.00 |           - |           - |         - |  529705832 B |        1.00 |
 |                      NDtw |               8163x8089 | 1,836,728,353.8 ns | 28,146,343.29 ns | 23,503,471.40 ns |  2.94 |    0.05 | 257000.0000 | 137000.0000 | 7000.0000 | 2114535544 B |        3.99 |
