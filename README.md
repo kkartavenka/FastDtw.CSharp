@@ -8,6 +8,7 @@ Further development:
 
 - Add to nuget repository
 - Add constrains
+- Add tests
 
 ## Usage
 
