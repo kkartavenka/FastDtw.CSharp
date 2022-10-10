@@ -79,3 +79,6 @@ At the time of investigating `FastDtw` (v 1.1.3) package was the fastest one, an
 |    FastDtw.CSharp (float) |                 500x500 |       726,095.7 ns |      4,534.84 ns |      4,241.89 ns |  **0.28** |    0.00 |    122.0703 |     46.8750 |         - |    1026112 B |        0.49 |
 |            ADN.TimeSeries |                 500x500 |    13,198,765.8 ns |     49,636.05 ns |     44,001.07 ns |  5.11 |    0.03 |    984.3750 |    984.3750 |  984.3750 |    4016530 B |        1.92 |
 
+# License
+
+FastDtw.CSharp is licensed under the [MIT license](https://github.com/kkartavenka/FastDtw.CSharp/blob/master/LICENSE.txt).
