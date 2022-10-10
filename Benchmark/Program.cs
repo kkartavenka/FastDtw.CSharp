@@ -2,8 +2,5 @@
 
 namespace Benchmark; 
 internal class Program {
-    static void Main() {
-        BenchmarkRunner.Run<BenchmarkDemo>();
-
-    }
+    static void Main() => BenchmarkRunner.Run<BenchmarkDemo>();
 }

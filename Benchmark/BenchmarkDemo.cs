@@ -1,15 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Benchmark;
 
 [MemoryDiagnoser]
 public class BenchmarkDemo {
-    private const string _testFile = @"C:\Users\kostya.kartavenka\source\repos\ndtw\Data\Test.csv";
+    // Need to find how to specify relative path with BenchmarkDotNet
+    private const string _testFile = @"C:\Users\kostya.kartavenka\source\repos\FastDtw.CSharp\Data\Test.csv";
     private readonly double[] _arrayA, _arrayB;
     private readonly float[] _arrayAF, _arrayBF;
     public BenchmarkDemo() => (_arrayA, _arrayB, _arrayAF, _arrayBF) = GetData();
@@ -51,17 +47,9 @@ public class BenchmarkDemo {
         }
 
         return (arrayA[0..idxA], arrayB[0..idxB], arrayAF[0..idxA], arrayBF[0..idxB]);
-    }
+    }   
 
-    public void GetResult() {
-        Console.WriteLine($"FastDtw result: {FastDtwRun()}");
-        Console.WriteLine($"NDtw result (double): {NDtwRun()}");
-        Console.WriteLine($"NDtw result (double): {NDtw2Run()}");
-        Console.WriteLine($"NDtw result (float): {NDtw2RunF()}");
-        Console.WriteLine($"ADN.TimeSeries result (double): {ADNDtwRun()}");
-    }
-
-    [Benchmark(Baseline = true)]
+    [Benchmark(Baseline = true, Description = "FastDtw")]
     public double FastDtwRun() {
         if (BenchmarkSequenceLength == 0)
             return FastDtw.Dtw.Distance(_arrayA, _arrayB);
@@ -69,7 +57,7 @@ public class BenchmarkDemo {
             return FastDtw.Dtw.Distance(_arrayA[0..BenchmarkSequenceLength], _arrayB[0..BenchmarkSequenceLength]);
     }
 
-    [Benchmark]
+    [Benchmark (Description = "NDtw")]
     public double NDtwRun() {
         if (BenchmarkSequenceLength == 0)
             return new NDtw.Dtw(_arrayA, _arrayB).GetCost();
@@ -78,23 +66,23 @@ public class BenchmarkDemo {
 
     }
 
-    [Benchmark]
-    public double NDtw2Run() {
+    [Benchmark(Description = "FastDtw.CSharp (double)")]
+    public double FastDtwCSharpRun() {
         if (BenchmarkSequenceLength == 0)
             return FastDtw.CSharp.Dtw.GetScore(_arrayA, _arrayB);
         else
             return FastDtw.CSharp.Dtw.GetScore(_arrayA[0..BenchmarkSequenceLength], _arrayB[0..BenchmarkSequenceLength]);
     }
 
-    [Benchmark]
-    public float NDtw2RunF() {
+    [Benchmark (Description = "FastDtw.CSharp (float)")]
+    public float FastDtwCSharpRunF() {
         if (BenchmarkSequenceLength == 0)
             return FastDtw.CSharp.Dtw.GetScoreF(_arrayAF, _arrayBF);
         else
             return FastDtw.CSharp.Dtw.GetScoreF(_arrayAF[0..BenchmarkSequenceLength], _arrayBF[0..BenchmarkSequenceLength]);
     }
 
-    [Benchmark]
+    [Benchmark(Description = "ADN.TimeSeries")]
     public double ADNDtwRun() {
         if (BenchmarkSequenceLength == 0)
             return new ADN.TimeSeries.DTW(_arrayA, _arrayB).GetSum();
