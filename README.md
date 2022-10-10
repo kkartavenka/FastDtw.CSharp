@@ -36,7 +36,7 @@ At the time of investigating `FastDtw` (v 1.1.3) package was the fastest one, an
 
 ### Short summary
 
-|                    Method | Time series lengthes | Ratio | Alloc Ratio |
+|                    Method | Time series lengthes | Ratio* | Alloc Ratio* |
 |-------------------------- |------------------------ |------:|------------:|
 |                   FastDtw |               8163x8089 |  1.00 |        1.00 |
 |                      NDtw |               8163x8089 |  2.94 |        3.99 |
@@ -56,6 +56,7 @@ At the time of investigating `FastDtw` (v 1.1.3) package was the fastest one, an
 |    FastDtw.CSharp (float) |                 500x500 |  **0.28** |        0.49 |
 |            ADN.TimeSeries |                 500x500 |  5.11 |        1.92 |
 
+Note: *Smaller is better
 
 ### Full reults
 
