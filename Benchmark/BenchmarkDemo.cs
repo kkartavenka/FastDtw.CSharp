@@ -5,7 +5,7 @@ namespace Benchmark;
 [MemoryDiagnoser]
 public class BenchmarkDemo {
     // Need to find how to specify relative path with BenchmarkDotNet
-    private const string _testFile = @"C:\Users\kostya.kartavenka\source\repos\FastDtw.CSharp\Data\Test.csv";
+    private const string _testFile = @"C:\Users\kkart\source\repos\FastDtw.CSharp\Data\Test.csv";
     private readonly double[] _arrayA, _arrayB;
     private readonly float[] _arrayAF, _arrayBF;
     public BenchmarkDemo() => (_arrayA, _arrayB, _arrayAF, _arrayBF) = GetData();
