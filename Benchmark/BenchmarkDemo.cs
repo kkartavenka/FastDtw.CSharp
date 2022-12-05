@@ -74,14 +74,6 @@ public class BenchmarkDemo {
             return FastDtw.CSharp.Dtw.GetScore(_arrayA[0..BenchmarkSequenceLength], _arrayB[0..BenchmarkSequenceLength]);
     }
 
-    [Benchmark(Description = "FastDtw.CSharp.V2 (double)")]
-    public double FastDtwCSharpRunV2() {
-        if (BenchmarkSequenceLength == 0)
-            return FastDtw.CSharp.Dtw.GetScoreV2(_arrayA, _arrayB);
-        else
-            return FastDtw.CSharp.Dtw.GetScoreV2(_arrayA[0..BenchmarkSequenceLength], _arrayB[0..BenchmarkSequenceLength]);
-    }
-
     [Benchmark (Description = "FastDtw.CSharp (float)")]
     public float FastDtwCSharpRunF() {
         if (BenchmarkSequenceLength == 0)

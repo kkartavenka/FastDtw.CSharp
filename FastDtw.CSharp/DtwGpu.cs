@@ -26,7 +26,7 @@ public static class DtwGpu {
             ArrayView1D<double, Stride1D.Dense>,
             ArrayView2D<double, Stride2D.DenseY>>(ExecuteKernel);
 
-        loadedKernel(allocDtwBuffer.Extent.ToIntIndex(), allocArrayA, allocArrayB, allocDtwBuffer);
+        loadedKernel(new Index2D(bLength, aLength), allocArrayA, allocArrayB, allocDtwBuffer);
 
         return 0;
     }
@@ -35,7 +35,7 @@ public static class DtwGpu {
         var aLength = arg2.Length;
         var bLength = arg3.Length;
 
-        for (var i = 1; i < aLength; i++) {
+        /*for (var i = 1; i < aLength; i++) {
             for (var j = 1; j < bLength; j++) {
                 var cost = Math.Abs(arg2[i - 1] - arg3[j - 1]);
 
@@ -51,7 +51,7 @@ public static class DtwGpu {
 
                 arg4[i, j] = cost + lastMin;
             }
-        }
+        }*/
 
         //Interop.WriteLine($"A: {aLength}, B: {bLength}");
         Interop.WriteLine("{0}", arg4[aLength - 1, bLength - 1]);
