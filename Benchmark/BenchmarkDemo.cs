@@ -5,15 +5,12 @@ namespace Benchmark;
 [MemoryDiagnoser]
 public class BenchmarkDemo {
     // Need to find how to specify relative path with BenchmarkDotNet
-    private const string _testFile = @"C:\Users\kostya.kartavenka\source\repos\FastDtw.CSharp\Data\Test.csv";
-    private readonly double[] _arrayA, _arrayB;
-    private readonly float[] _arrayAF, _arrayBF;
-    public BenchmarkDemo() => (_arrayA, _arrayB, _arrayAF, _arrayBF) = GetData();
+    private const string _testFile = @"C:\Users\kkart\source\repos\FastDtw.CSharp\Data\Test.csv";
+    private double[] _arrayA, _arrayB;
+    private float[] _arrayAF, _arrayBF;
 
-    [Params(0, 10, 500)]
-    public int BenchmarkSequenceLength { get; set; }
-
-    private static (double[] arrayA, double[] arrayB, float[] arrayAF, float[] arrayBF) GetData() {
+    private static (double[] arrayA, double[] arrayB, float[] arrayAF, float[] arrayBF) GetData()
+    {
         var lines = File.ReadAllLines(_testFile);
 
         var arrayA = new double[lines.Length];
@@ -22,32 +19,46 @@ public class BenchmarkDemo {
         var arrayBF = new float[lines.Length];
 
         int idxA = 0, idxB = 0;
-        foreach (var line in lines) {
+        foreach (var line in lines)
+        {
             var splittedString = line.Split(',');
 
-            if (double.TryParse(splittedString[0], out double varA)) {
+            if (double.TryParse(splittedString[0], out double varA))
+            {
                 arrayAF[idxA] = (float)varA;
                 arrayA[idxA++] = varA;
             }
 
-            if (double.TryParse(splittedString[1], out double varB)) {
+            if (double.TryParse(splittedString[1], out double varB))
+            {
                 arrayBF[idxB] = (float)varB;
                 arrayB[idxB++] = varB;
             }
         }
 
-        if (idxA != arrayA.Length) {
+        if (idxA != arrayA.Length)
+        {
             arrayA = arrayA[0..idxA];
             arrayAF = arrayAF[0..idxA];
         }
 
-        if (idxB != arrayB.Length) {
+        if (idxB != arrayB.Length)
+        {
             arrayB = arrayB[0..idxB];
             arrayBF = arrayBF[0..idxB];
         }
 
         return (arrayA[0..idxA], arrayB[0..idxB], arrayAF[0..idxA], arrayBF[0..idxB]);
-    }   
+    }
+
+    [Params(0, 10, 500)]
+    public int BenchmarkSequenceLength { get; set; }
+
+    [GlobalSetup]
+    public void Setup()
+    {
+        (_arrayA, _arrayB, _arrayAF, _arrayBF) = GetData();
+    }
 
     [Benchmark(Baseline = true, Description = "FastDtw")]
     public double FastDtwRun() {

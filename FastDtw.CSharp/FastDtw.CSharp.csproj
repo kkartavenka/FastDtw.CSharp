@@ -5,6 +5,13 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>FastDtw Implementation in C#</Title>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Kostya Kartavenka</Authors>
+    <PackageProjectUrl>https://github.com/kkartavenka/FastDtw.CSharp</PackageProjectUrl>
+    <PackageTags>dtw;timeseries;fastdtw</PackageTags>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
 </Project>
