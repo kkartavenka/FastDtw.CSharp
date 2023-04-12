@@ -1,6 +1,6 @@
 # FastDtw.CSharp
 
-Fast Dynamic Time Warping (DTW) algorithm implementation in .NET C# focusing on performance.
+Fast Dynamic Time Warping (DTW) algorithm implementation in .NET C# with a focus on performance.
 
 Reference: [Fast DTW: Toward Accurate Dynamic Time Warping in Linear Time and and Space](https://cs.fit.edu/~pkc/papers/tdm04.pdf) 
 
