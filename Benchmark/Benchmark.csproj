@@ -9,13 +9,20 @@
 
   <ItemGroup>
     <PackageReference Include="ADN.TimeSeries" Version="1.3.0" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
-    <PackageReference Include="FastDtw" Version="1.1.3" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+    <PackageReference Include="FastDtw" Version="1.1.4" />
     <PackageReference Include="NDtw" Version="0.2.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FastDtw.CSharp\FastDtw.CSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Data\Test.csv">
+      <Link>Test.csv</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

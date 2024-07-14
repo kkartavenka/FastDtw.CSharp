@@ -1,17 +1,21 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace Benchmark;
 
 [MemoryDiagnoser]
+[SimpleJob(RuntimeMoniker.Net48)]
+[SimpleJob(RuntimeMoniker.Net60)]
+[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.NativeAot80)]
 public class BenchmarkDemo {
-    // Need to find how to specify relative path with BenchmarkDotNet
-    private const string _testFile = @"C:\Users\kkart\source\repos\FastDtw.CSharp\Data\Test.csv";
+    private const string TestFile = @"Test.csv";
     private double[] _arrayA, _arrayB;
     private float[] _arrayAF, _arrayBF;
 
     private static (double[] arrayA, double[] arrayB, float[] arrayAF, float[] arrayBF) GetData()
     {
-        var lines = File.ReadAllLines(_testFile);
+        var lines = File.ReadAllLines(TestFile);
 
         var arrayA = new double[lines.Length];
         var arrayB = new double[lines.Length];
@@ -68,7 +72,7 @@ public class BenchmarkDemo {
             return FastDtw.Dtw.Distance(_arrayA[0..BenchmarkSequenceLength], _arrayB[0..BenchmarkSequenceLength]);
     }
 
-    [Benchmark (Description = "NDtw")]
+    //[Benchmark (Description = "NDtw")]
     public double NDtwRun() {
         if (BenchmarkSequenceLength == 0)
             return new NDtw.Dtw(_arrayA, _arrayB).GetCost();
@@ -93,7 +97,7 @@ public class BenchmarkDemo {
             return FastDtw.CSharp.Dtw.GetScoreF(_arrayAF[0..BenchmarkSequenceLength], _arrayBF[0..BenchmarkSequenceLength]);
     }
 
-    [Benchmark(Description = "ADN.TimeSeries")]
+    //[Benchmark(Description = "ADN.TimeSeries")]
     public double ADNDtwRun() {
         if (BenchmarkSequenceLength == 0)
             return new ADN.TimeSeries.DTW(_arrayA, _arrayB).GetSum();
