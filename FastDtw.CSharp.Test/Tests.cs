@@ -1,9 +1,14 @@
+using System;
+using System.IO;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace FastDtw.CSharp.Test
 {
     [TestClass]
     public class Tests
     {
-        private const string _testFile = @"C:\Users\kkart\source\repos\FastDtw.CSharp\Data\Test.csv";
+        private const string _testFile = @"Test.csv";
         private double[] _arrayA, _arrayB;
         private float[] _arrayAF, _arrayBF;
 
@@ -36,29 +41,40 @@ namespace FastDtw.CSharp.Test
 
             if (idxA != arrayA.Length)
             {
-                arrayA = arrayA[0..idxA];
-                arrayAF = arrayAF[0..idxA];
+                arrayA = arrayA.Take(idxA)
+                    .ToArray();
+                arrayAF = arrayAF.Take(idxA)
+                    .ToArray();
             }
 
             if (idxB != arrayB.Length)
             {
-                arrayB = arrayB[0..idxB];
-                arrayBF = arrayBF[0..idxB];
+                arrayB = arrayB.Take(idxB)
+                    .ToArray();
+                arrayBF = arrayBF.Take(idxB)
+                    .ToArray();
             }
 
-            return (arrayA[0..idxA], arrayB[0..idxB], arrayAF[0..idxA], arrayBF[0..idxB]);
+            return (
+                arrayA.Take(idxA).ToArray(), 
+                arrayB.Take(idxB).ToArray(),
+                arrayAF.Take(idxA).ToArray(),
+                arrayBF.Take(idxB).ToArray());
         }
 
         [TestInitialize]
-        public void Init() => (_arrayA, _arrayB, _arrayAF, _arrayBF) = GetData();
+        public void Init()
+        {
+            (_arrayA, _arrayB, _arrayAF, _arrayBF) = GetData();
+        }
 
         [TestMethod]
         public void EqualLength()
         {
             var a = new double[] { 41.98, 41.65, 42.01, 42.35, 44.4, 43.08, 43.6, 42.84, 42.83, 44.01, 43.07, 44.3, 44.6, 46.54, 45.06, 44.96, 43.59, 46.84, 45.22, 45.52 };
             var b = new double[] { 95.07, 93.5, 96.67, 96.28, 102.47, 94.24, 95.12, 87.06, 87.92, 88.73, 86.36, 95.34, 93.87, 99.42, 91.13, 89.84, 85.52, 89.64, 84.91, 85.16 };
-
-            Assert.AreEqual(Dtw.GetScore(a, b), 959.79999999999984);
+            
+            Assert.AreEqual(959.79999999999984, Dtw.GetScore(a, b));
         }
 
         [TestMethod]
@@ -67,7 +83,7 @@ namespace FastDtw.CSharp.Test
             var a = new double[] { 41.98, 41.65, 42.01, 42.35, 44.4, 43.08, 43.6, 42.84, 42.83, 44.01, 43.07, 44.3, 44.6, 46.54, 45.06, 44.96, 43.59, 46.84, 45.22, 45.52 };
             var b = new double[] { 95.07, 93.5, 96.67, 96.28, 102.47, 94.24, 95.12, 87.06, 87.92, 88.73, 86.36, 95.34, 93.87, 99.42 };
 
-            Assert.AreEqual(Dtw.GetScore(a, b), 951.76);
+            Assert.AreEqual(951.76, Dtw.GetScore(a, b));
         }
 
         [TestMethod]
@@ -131,6 +147,5 @@ namespace FastDtw.CSharp.Test
             var r2 = Dtw.GetScoreF(_arrayAF, _arrayBF);
             Assert.IsTrue(Math.Max(r1, r2) / Math.Min(r1, r2) < 1.00001);
         }
-
     }
 }

@@ -1,119 +1,132 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-namespace FastDtw.CSharp
+namespace FastDtw.CSharp;
+
+public static partial class Dtw
 {
-    public static class Dtw
+    public static double GetScore(double[] arrayA, double[] arrayB)
     {
-        public static double GetScore(double[] arrayA, double[] arrayB)
+        Shared.ValidateLength(arrayA, arrayB);
+        
+        var aLength = arrayA.Length;
+        var bLength = arrayB.Length;
+        var tCostMatrix = new double[2 * bLength];
+
+        ref var arrayAZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayA);
+        ref var arrayBZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayB);
+        ref var costMatrixZeroElement = ref MemoryMarshal.GetArrayDataReference(tCostMatrix);
+
+        var previousRow = 0;
+        var currentRow = -bLength;
+        var tPathLength = tCostMatrix.Length;
+
+        double lastMin;
+        double lastCalculatedCost = 0;
+        for (var i = 0; i < aLength; i++)
         {
-            var (aLength, bLength) = (arrayA.Length + 1, arrayB.Length + 1);
-            var dtw = new double[2 * bLength];
-
-#if NET6_0_OR_GREATER
-            var spanA = arrayA.AsSpan();
-            var spanB = arrayB.AsSpan();
-#else
-            var spanA = arrayA;
-            var spanB = arrayB;
-#endif
-            int previousRow = 0, currentRow = -bLength;
-
-            for (var i = 1; i < aLength; i++)
+            currentRow += bLength;
+            if (currentRow == tPathLength)
             {
-                currentRow += bLength;
-                if (currentRow == dtw.Length)
-                {
-                    currentRow = 0;
-                }
-
-                for (var j = 1; j < bLength; j++)
-                {
-                    double lastMin;
-                    if (i == 1 && j == 1)
-                    {
-                        lastMin = dtw[previousRow + j - 1];
-                    }
-                    else if (i == 1)
-                    {
-                        lastMin = dtw[currentRow + j - 1];
-                    }
-                    else if (j == 1)
-                    {
-                        lastMin = dtw[previousRow + j];
-                    }
-                    else
-                    {
-                        lastMin = Math.Min(dtw[previousRow + j],
-                            Math.Min(dtw[currentRow + j - 1], dtw[previousRow + j - 1]));
-                    }
-
-                    dtw[currentRow + j] = Math.Abs(spanA[i - 1] - spanB[j - 1]) + lastMin;
-                }
-
-                previousRow = currentRow;
+                currentRow = 0;
             }
 
-            return dtw[currentRow + bLength - 1];
-        }
-
-        public static float GetScoreF(float[] arrayA, float[] arrayB)
-        {
-            var (aLength, bLength) = (arrayA.Length + 1, arrayB.Length + 1);
-            var dtw = new float[2 * bLength];
-
-#if NET6_0_OR_GREATER
-            var spanA = arrayA.AsSpan();
-            var spanB = arrayB.AsSpan();
-#else
-            var spanA = arrayA;
-            var spanB = arrayB;
-#endif
-
-            int previousRow = 0, currentRow = -bLength;
-
-            for (var i = 1; i < aLength; i++)
+            for (var j = 0; j < bLength; j++)
             {
-                currentRow += bLength;
-                if (currentRow == dtw.Length)
+                if (i == 0 && j == 0)
                 {
-                    currentRow = 0;
+                    lastMin = 0;
+                }
+                else if (i == 0)
+                {
+                    lastMin = lastCalculatedCost;
+                }
+                else if (j == 0)
+                {
+                    lastMin = Unsafe.Add(ref costMatrixZeroElement, previousRow);
+                }
+                else
+                {
+                    lastMin = Shared.FindMinimum(
+                        ref Unsafe.Add(ref costMatrixZeroElement, previousRow + j),
+                        ref Unsafe.Add(ref costMatrixZeroElement, previousRow + j - 1),
+                        ref lastCalculatedCost);
                 }
 
-                for (var j = 1; j < bLength; j++)
-                {
-                    float lastMin;
-                    if (i == 1 && j == 1)
-                    {
-                        lastMin = dtw[previousRow + j - 1];
-                    }
-                    else if (i == 1)
-                    {
-                        lastMin = dtw[currentRow + j - 1];
-                    }
-                    else if (j == 1)
-                    {
-                        lastMin = dtw[previousRow + j];
-                    }
-                    else
-#if NET6_0_OR_GREATER
-                        lastMin = MathF.Min(dtw[previousRow + j],
-                            MathF.Min(dtw[currentRow + j - 1], dtw[previousRow + j - 1]));
+                var absDifference =
+                    Math.Abs(Unsafe.Add(ref arrayAZeroElement, i) - Unsafe.Add(ref arrayBZeroElement, j));
 
-                    dtw[currentRow + j] = MathF.Abs(spanA[i - 1] - spanB[j - 1]) + lastMin;
-#else
-                    {
-                        lastMin = Math.Min(dtw[previousRow + j],
-                            Math.Min(dtw[currentRow + j - 1], dtw[previousRow + j - 1]));
-                    }
-
-                    dtw[currentRow + j] = Math.Abs(spanA[i - 1] - spanB[j - 1]) + lastMin;
-#endif
-                }
-
-                previousRow = currentRow;
+                lastCalculatedCost = absDifference + lastMin;
+                Unsafe.Add(ref costMatrixZeroElement, currentRow + j) = lastCalculatedCost;
             }
 
-            return dtw[currentRow + bLength - 1];
+            previousRow = currentRow;
         }
+
+        return Unsafe.Add(ref costMatrixZeroElement, currentRow + bLength - 1);
+    }
+
+    public static float GetScoreF(float[] arrayA, float[] arrayB)
+    {
+        Shared.ValidateLength(arrayA, arrayB);
+        
+        var aLength = arrayA.Length;
+        var bLength = arrayB.Length;
+        var tCostMatrix = new float[2 * bLength];
+
+        ref var arrayAZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayA);
+        ref var arrayBZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayB);
+        ref var costMatrixZeroElement = ref MemoryMarshal.GetArrayDataReference(tCostMatrix);
+
+        var previousRow = 0;
+        var currentRow = -bLength;
+        var tPathLength = tCostMatrix.Length;
+
+        float lastMin;
+        float lastCalculatedCost = 0;
+        for (var i = 0; i < aLength; i++)
+        {
+            currentRow += bLength;
+            if (currentRow == tPathLength)
+            {
+                currentRow = 0;
+            }
+
+            for (var j = 0; j < bLength; j++)
+            {
+                if (i == 0 && j == 0)
+                {
+                    lastMin = 0;
+                }
+                else if (i == 0)
+                {
+                    lastMin = lastCalculatedCost;
+                }
+                else if (j == 0)
+                {
+                    lastMin = Unsafe.Add(ref costMatrixZeroElement, previousRow + j);
+                }
+                else
+                {
+                    lastMin = Shared.FindMinimumF(
+                        ref Unsafe.Add(ref costMatrixZeroElement, previousRow + j),
+                        ref Unsafe.Add(ref costMatrixZeroElement, previousRow + j - 1),
+                        ref lastCalculatedCost);
+                }
+
+                var absDifference =
+                    Math.Abs(Unsafe.Add(ref arrayAZeroElement, i) - Unsafe.Add(ref arrayBZeroElement, j));
+
+                lastCalculatedCost = absDifference + lastMin;
+                Unsafe.Add(ref costMatrixZeroElement, currentRow + j) = lastCalculatedCost;
+            }
+
+            previousRow = currentRow;
+        }
+
+        return Unsafe.Add(ref costMatrixZeroElement, currentRow + bLength - 1);
     }
 }
+#endif

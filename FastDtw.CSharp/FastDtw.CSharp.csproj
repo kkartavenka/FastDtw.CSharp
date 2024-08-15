@@ -6,12 +6,14 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Kostya Kartavenka</Authors>
     <PackageProjectUrl>https://github.com/kkartavenka/FastDtw.CSharp</PackageProjectUrl>
-    <PackageTags>dtw;timeseries;fastdtw</PackageTags>
+    <PackageTags>dtw;timeseries;fastdtw;patternrecognition;algorithms;timeseriesanalysis</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>1.1.1</Version>
-    <TargetFrameworks>net6.0;netstandard2.0;net8.0</TargetFrameworks>
+    <Version>2.0.0</Version>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RepositoryUrl>https://github.com/kkartavenka/FastDtw.CSharp</RepositoryUrl>
+    <TargetFrameworks>net6.0;net8.0;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
