@@ -65,7 +65,7 @@ public class BenchmarkDemo {
         (_arrayA, _arrayB, _fArrayA, _fArrayB) = GetData();
     }
 
-    [Benchmark(Description = "FastDtw")]
+    [Benchmark(Description = "FastDtw.Distance()")]
     public double FastDtwRun()
     {
         return BenchmarkSequenceLength == 0 
@@ -73,7 +73,7 @@ public class BenchmarkDemo {
             : FastDtw.Dtw.Distance(_arrayA[0..BenchmarkSequenceLength], _arrayB[0..BenchmarkSequenceLength]);
     }
     
-    [Benchmark(Description = "FastDtw")]
+    [Benchmark(Description = "FastDtw.DistanceWithPath()")]
     public Tuple<double, FSharpList<Tuple<int,int>>> FastDtwWithPathRun()
     {
         var radius = Math.Max(_arrayA.Length, _arrayB.Length);
