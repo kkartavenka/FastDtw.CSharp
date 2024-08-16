@@ -37,28 +37,28 @@ FastDtw.CSharp.Dtw.GetPath(seriesA, seriesB)
 
 The comparison was performed to the following packages: [FastDtw (v.1.1.4)](https://www.nuget.org/packages/FastDtw), [NDtw v.0.2.3](https://www.nuget.org/packages/NDtw), and [ADN.TimeSeries (v.1.3.0)](https://www.nuget.org/packages/ADN.TimeSeries). The proposed implementation is at least 3 times faster and requires significantly smaller memory allocation compared to the listed libraries. The complete results are summarized below on Apple M2 macOS Sonoma 14.6.1 (.NET 8.0):
 
-| Method/Library             | Series length | Mean        | Ratio | Gen0    | Gen1    | Gen2    | Allocated  |
-|--------------------------: |-------------- |-----------: |------ |-------- |-------- |-------- |-----------:|
-| FastDtw.CSharp.GetScore()  | 8163x8089     |   151.6 ms  | 1.0   | -       | -       | -       | 131.3 KB   |
-| FastDtw.CSharp.GetScoreF() | 8163x8089     |   130.9 ms  | 0.86  | -       | -       | -       | 66.8  KB   |
-| FastDtw.CSharp.GetPath()   | 8163x8089     |   182.8 ms  | 1.21  | 333     | 333     | 333     | 528.8 MB   |
-| FastDtw.Distance()         | 8163x8089     |     450 ms  | 2.97  | -       | -       | -       | 529.7 MB   |
-| ADN.TimeSeries             | 8163x8089     |     2.8 s   | 18.3  | 1000    | 1000    | 1000    | 1.06  GB   |
-| NDtw                       | 8163x8089     |   980.7 ms  | 6.47  | 343 K   | 178 K   | 7 K     | 2.11  GB   |
-|                            |               |             |       |         |         |         |            |
-| FastDtw.CSharp.GetScore()  | 500x500       |   0.331 ms  | 1.0   | 1.46    | -       | -       |  16.0 KB   |
-| FastDtw.CSharp.GetScoreF() | 500x500       |   0.327 ms  | 0.99  | 0.49    | -       | -       |  8.07 KB   |
-| FastDtw.CSharp.GetPath()   | 500x500       |   0.391 ms  | 1.18  | 339.4   | 335.4   | 332.5   |  2.03 MB   |
-| FastDtw.Distance()         | 500x500       |   1.209 ms  | 3.65  | 347.7   | 339.8   | 330.1   |  2.09 MB   |
-| ADN.TimeSeries             | 500x500       |   8.791 ms  | 26.5  | 562.5   | 562.5   | 484.4   |  4.02 MB   |
-| NDtw                       | 500x500       |   2.931 ms  | 8.85  | 968.8   | 460.9   | 230.5   |  8.10 MB   |
-|                            |               |             |       |         |         |         |            |
-| FastDtw.CSharp.GetScore()  | 10x10         |   125.5 ns  | 1.0   | 0.047   | -       | -       |   392 B    |
-| FastDtw.CSharp.GetScoreF() | 10x10         |   120.0 ns  | 0.96  | 0.028   | -       | -       |   232 B    |
-| FastDtw.CSharp.GetPath()   | 10x10         |   258.6 ns  | 2.06  | 0.174   | -       | -       |  1.46 KB   |
-| FastDtw.Distance()         | 10x10         |   758.9 ns  | 6.05  | 0.33    | -       | -       |  2.76 KB   |
-| ADN.TimeSeries             | 10x10         | 2,648.8 ns  | 21.1  | 0.252   | -       | -       |  2.11 KB   |
-| NDtw                       | 10x10         | 1,192.5 ns  | 9.5   | 0.696   | -       | -       |  5.83 KB   |
+| Method/Library             | Series length | Mean        | Ratio | Gen0    | Gen1    | Gen2    | Allocated  | Alloc Ratio  |
+|--------------------------: |-------------- |-----------: |------ |-------- |-------- |-------- |-----------:|-------------:|
+| FastDtw.CSharp.GetScore()  | 8163x8089     |   151.6 ms  | 1.0   | -       | -       | -       | 131.3 KB   | 1.0          |
+| FastDtw.CSharp.GetScoreF() | 8163x8089     |   130.9 ms  | 0.86  | -       | -       | -       | 66.8  KB   | 0.51         |
+| FastDtw.CSharp.GetPath()   | 8163x8089     |   182.8 ms  | 1.21  | 333     | 333     | 333     | 528.8 MB   | 4,027.0      |
+| FastDtw.Distance()         | 8163x8089     |     450 ms  | 2.97  | -       | -       | -       | 529.7 MB   | 4,034.0      |
+| ADN.TimeSeries             | 8163x8089     |     2.8 s   | 18.3  | 1000    | 1000    | 1000    | 1.06  GB   | 8,046.7      |
+| NDtw                       | 8163x8089     |   980.7 ms  | 6.47  | 343 K   | 178 K   | 7 K     | 2.11  GB   | 16,103.2     |
+|                            |               |             |       |         |         |         |            |              |
+| FastDtw.CSharp.GetScore()  | 500x500       |   0.331 ms  | 1.0   | 1.46    | -       | -       |  16.0 KB   | 1.0          |
+| FastDtw.CSharp.GetScoreF() | 500x500       |   0.327 ms  | 0.99  | 0.49    | -       | -       |  8.07 KB   | 0.5          |
+| FastDtw.CSharp.GetPath()   | 500x500       |   0.391 ms  | 1.18  | 339.4   | 335.4   | 332.5   |  2.03 MB   | 126.7        |
+| FastDtw.Distance()         | 500x500       |   1.209 ms  | 3.65  | 347.7   | 339.8   | 330.1   |  2.09 MB   | 129.9        |
+| ADN.TimeSeries             | 500x500       |   8.791 ms  | 26.5  | 562.5   | 562.5   | 484.4   |  4.02 MB   | 249.9        |
+| NDtw                       | 500x500       |   2.931 ms  | 8.85  | 968.8   | 460.9   | 230.5   |  8.10 MB   | 504.3        |
+|                            |               |             |       |         |         |         |            |              |
+| FastDtw.CSharp.GetScore()  | 10x10         |   125.5 ns  | 1.0   | 0.047   | -       | -       |   392 B    | 1.0          |
+| FastDtw.CSharp.GetScoreF() | 10x10         |   120.0 ns  | 0.96  | 0.028   | -       | -       |   232 B    | 0.59         |
+| FastDtw.CSharp.GetPath()   | 10x10         |   258.6 ns  | 2.06  | 0.174   | -       | -       |  1.46 KB   | 3.71         |
+| FastDtw.Distance()         | 10x10         |   758.9 ns  | 6.05  | 0.33    | -       | -       |  2.76 KB   | 7.0          |
+| ADN.TimeSeries             | 10x10         | 2,648.8 ns  | 21.1  | 0.252   | -       | -       |  2.11 KB   | 5.4          |
+| NDtw                       | 10x10         | 1,192.5 ns  | 9.5   | 0.696   | -       | -       |  5.83 KB   | 14.9         |
 
 One must consider which method to use to get the best performance. Specifically, if you are interested in a DTW warp score only `.GetScore()` is sufficient since it has the smallest memory allocation and the fastest processing time. To get the warp path with `.GetPath()` method, the whole cost matrix is created and stored which requires larger allocations. Additionally, `.GetScoreF()` will decrease memory allocations since single precision variable is used instead of double. The implementation is slightly different when targeting .NET 6.0 and higher compared to .NET Standard. The results are summarized below on Intel Core i7-9750H CPU, Windows 11):
 
