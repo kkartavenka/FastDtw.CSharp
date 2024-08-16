@@ -35,7 +35,7 @@ FastDtw.CSharp.Dtw.GetPath(seriesA, seriesB)
 
 ## Performance results
 
-The comparison was performed with the following packages: [FastDtw (v.1.1.4)](https://www.nuget.org/packages/FastDtw), [NDtw v.0.2.3](https://www.nuget.org/packages/NDtw), and [ADN.TimeSeries (v.1.3.0)](https://www.nuget.org/packages/ADN.TimeSeries). The proposed implementation is at least 3 times faster compared to the listed libraries. The complete results are summarized below on Apple M2 macOS Sonoma 14.6.1 (.NET 8.0):
+The comparison was performed to the following packages: [FastDtw (v.1.1.4)](https://www.nuget.org/packages/FastDtw), [NDtw v.0.2.3](https://www.nuget.org/packages/NDtw), and [ADN.TimeSeries (v.1.3.0)](https://www.nuget.org/packages/ADN.TimeSeries). The proposed implementation is at least 3 times faster and requires significantly smaller memory allocation compared to the listed libraries. The complete results are summarized below on Apple M2 macOS Sonoma 14.6.1 (.NET 8.0):
 
 | Method/Library             | Series length | Mean        | Ratio | Gen0    | Gen1    | Gen2    | Allocated  |
 |--------------------------: |-------------- |-----------: |------ |-------- |-------- |-------- |-----------:|
