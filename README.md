@@ -32,58 +32,58 @@ double[] seriesB = new double[] {1, 2, 3, 4, 5};
 
 FastDtw.CSharp.Dtw.GetPath(seriesA, seriesB)
 ```
---- Performance results to be updated for version 2.0 ---
-
 
 ## Performance results
 
-At the time of investigating `FastDtw` (v 1.1.3) package was the fastest one, and therefore was used as a baseline. `ADN.TimeSeries` was not able to process larger dataset without errors. Compared to FastDtw v 1.1.3 a significant improvement was achieved for short and long time series. 
+The comparison was performed with the following packages: [FastDtw (v.1.1.4)](https://www.nuget.org/packages/FastDtw), [NDtw v.0.2.3](https://www.nuget.org/packages/NDtw), and [ADN.TimeSeries (v.1.3.0)](https://www.nuget.org/packages/ADN.TimeSeries). The proposed implementation is at least 3 times faster compared to the listed libraries. The complete results are summarized below on Apple M2 macOS Sonoma 14.6.1 (.NET 8.0):
 
-### Summary
+| Method/Library             | Series length | Mean        | Ratio | Gen0    | Gen1    | Gen2    | Allocated  |
+|--------------------------: |-------------- |-----------: |------ |-------- |-------- |-------- |-----------:|
+| FastDtw.CSharp.GetScore()  | 8163x8089     |   151.6 ms  | 1.0   | -       | -       | -       | 131.3 KB   |
+| FastDtw.CSharp.GetScoreF() | 8163x8089     |   130.9 ms  | 0.86  | -       | -       | -       | 66.8  KB   |
+| FastDtw.CSharp.GetPath()   | 8163x8089     |   182.8 ms  | 1.21  | 333     | 333     | 333     | 528.8 MB   |
+| FastDtw.Distance()         | 8163x8089     |     450 ms  | 2.97  | -       | -       | -       | 529.7 MB   |
+| ADN.TimeSeries             | 8163x8089     |     2.8 s   | 18.3  | 1000    | 1000    | 1000    | 1.06  GB   |
+| NDtw                       | 8163x8089     |   980.7 ms  | 6.47  | 343 K   | 178 K   | 7 K     | 2.11  GB   |
+|                            |               |             |       |         |         |         |            |
+| FastDtw.CSharp.GetScore()  | 500x500       |   0.331 ms  | 1.0   | 1.46    | -       | -       |  16.0 KB   |
+| FastDtw.CSharp.GetScoreF() | 500x500       |   0.327 ms  | 0.99  | 0.49    | -       | -       |  8.07 KB   |
+| FastDtw.CSharp.GetPath()   | 500x500       |   0.391 ms  | 1.18  | 339.4   | 335.4   | 332.5   |  2.03 MB   |
+| FastDtw.Distance()         | 500x500       |   1.209 ms  | 3.65  | 347.7   | 339.8   | 330.1   |  2.09 MB   |
+| ADN.TimeSeries             | 500x500       |   8.791 ms  | 26.5  | 562.5   | 562.5   | 484.4   |  4.02 MB   |
+| NDtw                       | 500x500       |   2.931 ms  | 8.85  | 968.8   | 460.9   | 230.5   |  8.10 MB   |
+|                            |               |             |       |         |         |         |            |
+| FastDtw.CSharp.GetScore()  | 10x10         |   125.5 ns  | 1.0   | 0.047   | -       | -       |   392 B    |
+| FastDtw.CSharp.GetScoreF() | 10x10         |   120.0 ns  | 0.96  | 0.028   | -       | -       |   232 B    |
+| FastDtw.CSharp.GetPath()   | 10x10         |   258.6 ns  | 2.06  | 0.174   | -       | -       |  1.46 KB   |
+| FastDtw.Distance()         | 10x10         |   758.9 ns  | 6.05  | 0.33    | -       | -       |  2.76 KB   |
+| ADN.TimeSeries             | 10x10         | 2,648.8 ns  | 21.1  | 0.252   | -       | -       |  2.11 KB   |
+| NDtw                       | 10x10         | 1,192.5 ns  | 9.5   | 0.696   | -       | -       |  5.83 KB   |
 
-|                    Method | Series length AxB |               Mean | Ratio |    Allocated | Alloc Ratio |
-|-------------------------- |------------------------ |-------------------:|------:|-------------:|------------:|
-|                   FastDtw |               8163x8089 |   852.8 ms |  1.00 |  529705064 B |       1.000 |
-|                      NDtw |               8163x8089 | 2,363.0 ms |  2.77 | 2114538016 B |       3.992 |
-|   FastDtw.CSharp (double) |               8163x8089 |   261.7 ms |  0.31 |     130840 B |       0.000 |
-|    FastDtw.CSharp (float) |               8163x8089 |   279.7 ms |  0.33 |      67096 B |       0.000 |
-|            ADN.TimeSeries |               8163x8089 |                 NA | NA |            - |           ? |
-|                           |                         |                    |              |             |
-|                   FastDtw |                   10x10 |         1,887.9 ns |  1.00 |       2760 B |        1.00 |
-|                      NDtw |                   10x10 |         2,119.2 ns |  1.12 |       5832 B |        2.11 |
-|   FastDtw.CSharp (double) |                   10x10 |           381.0 ns |  0.20 |        408 B |        0.15 |
-|    FastDtw.CSharp (float) |                   10x10 |           402.4 ns |  0.21 |        240 B |        0.09 |
-|            ADN.TimeSeries |                   10x10 |         6,365.9 ns |  3.82 |       2112 B |        0.77 |
-|                           |                         |                    |       |              |             |
-|                   FastDtw |                 500x500 |     3,702.9 µs |  1.00 |    2086744 B |       1.000 |
-|                      NDtw |                 500x500 |     6,804.2 µs |  1.84 |    8104805 B |       3.884 |
-|   FastDtw.CSharp (double) |                 500x500 |       939.5 µs |  0.25 |      16088 B |       0.008 |
-|    FastDtw.CSharp (float) |                 500x500 |     1,030.9 µs |  0.28 |       8081 B |       0.004 |
-|            ADN.TimeSeries |                 500x500 |    15,957.7 µs |  4.31 |    4016530 B |       1.925 |
+One must consider which method to use to get the best performance. Specifically, if you are interested in a DTW warp score only `.GetScore()` is sufficient since it has the smallest memory allocation and the fastest processing time. To get the warp path with `.GetPath()` method, the whole cost matrix is created and stored which requires larger allocations. Additionally, `.GetScoreF()` will decrease memory allocations since single precision variable is used instead of double. The implementation is slightly different when targeting .NET 6.0 and higher compared to .NET Standard. The results are summarized below on Intel Core i7-9750H CPU, Windows 11):
 
-Note: *Smaller is better
+| Method     | Runtime  | Series length | Mean      | Gen0   | Allocated  |
+|----------- |--------- |-------------- |---------- |------- |-----------:|
+| GetScore() | .NET 8.0 | 8163x8089     | 181.5 ms  | -      | 130.8 KB   |
+| GetScore() | .NET481  | 8163x8089     | 232.3 ms  | -      | 133.4 KB   |
+|            |          |               |           |        |            |
+| GetScore() | .NET 8.0 | 500x500       | 0.54 ms   | 1.95   |  16.2 KB   |
+| GetScore() | .NET481  | 500x500       | 0.84 ms   | 4.88   |  33.1 KB   |
+|            |          |               |           |        |            |
+| GetScore() | .NET 8.0 | 10x10         | 292.9 ns  | 0.078  |   488 B    |
+| GetScore() | .NET481  | 10x10         | 792.4 ns  | 0.187  |  1.18 KB   |
 
-### Full results
 
-|                    Method | BenchmarkSequenceLength |               Mean |            Error |           StdDev | Ratio | RatioSD |        Gen0 |        Gen1 |      Gen2 |    Allocated | Alloc Ratio |
-|-------------------------- |------------------------ |-------------------:|-----------------:|-----------------:|------:|--------:|------------:|------------:|----------:|-------------:|------------:|
-|                   FastDtw |               8163x8089 |   852,770,223.1 ns | 14,650,159.15 ns | 12,233,546.40 ns |  1.00 |    0.00 |           - |           - |         - |  529705064 B |       1.000 |
-|                      NDtw |               8163x8089 | 2,363,016,883.3 ns | 24,067,817.16 ns | 18,790,568.52 ns |  2.77 |    0.04 | 340000.0000 | 175000.0000 | 7000.0000 | 2114538016 B |       3.992 |
-|   FastDtw.CSharp (double) |               8163x8089 |   261,675,781.1 ns |  5,174,377.41 ns |  8,786,485.53 ns |  0.31 |    0.01 |           - |           - |         - |     130840 B |       0.000 |
-|    FastDtw.CSharp (float) |               8163x8089 |   279,699,110.0 ns |  5,400,750.08 ns |  5,051,864.97 ns |  0.33 |    0.01 |           - |           - |         - |      67096 B |       0.000 |
-|            ADN.TimeSeries |               8163x8089 |                 NA |               NA |               NA |     ? |       ? |           - |           - |         - |            - |           ? |
-|                           |                         |                    |                  |                  |       |         |             |             |           |              |             |
-|                   FastDtw |                   10x10 |         1,887.9 ns |         36.80 ns |         34.43 ns |  1.00 |    0.00 |      0.4387 |      0.0019 |         - |       2760 B |        1.00 |
-|                      NDtw |                   10x10 |         2,119.2 ns |         22.72 ns |         18.97 ns |  1.12 |    0.02 |      0.9270 |      0.0191 |         - |       5832 B |        2.11 |
-|   FastDtw.CSharp (double) |                   10x10 |           381.0 ns |          1.78 ns |          1.39 ns |  0.20 |    0.00 |      0.0648 |           - |         - |        408 B |        0.15 |
-|    FastDtw.CSharp (float) |                   10x10 |           402.4 ns |          2.85 ns |          2.67 ns |  0.21 |    0.00 |      0.0381 |           - |         - |        240 B |        0.09 |
-|            ADN.TimeSeries |                   10x10 |         6,365.9 ns |        351.47 ns |      1,025.26 ns |  3.82 |    0.83 |      0.3357 |           - |         - |       2112 B |        0.77 |
-|                           |                         |                    |                  |                  |       |         |             |             |           |              |             |
-|                   FastDtw |                 500x500 |     3,702,870.0 ns |     27,765.07 ns |     25,971.46 ns |  1.00 |    0.00 |    496.0938 |    496.0938 |  496.0938 |    2086744 B |       1.000 |
-|                      NDtw |                 500x500 |     6,804,232.9 ns |    114,975.57 ns |     89,765.37 ns |  1.84 |    0.03 |   1335.9375 |    671.8750 |  257.8125 |    8104805 B |       3.884 |
-|   FastDtw.CSharp (double) |                 500x500 |       939,511.9 ns |      5,399.81 ns |      4,509.08 ns |  0.25 |    0.00 |      1.9531 |           - |         - |      16088 B |       0.008 |
-|    FastDtw.CSharp (float) |                 500x500 |     1,030,855.3 ns |     18,986.04 ns |     15,854.20 ns |  0.28 |    0.00 |           - |           - |         - |       8081 B |       0.004 |
-|            ADN.TimeSeries |                 500x500 |    15,957,675.2 ns |    224,745.02 ns |    199,230.60 ns |  4.31 |    0.07 |    968.7500 |    968.7500 |  968.7500 |    4016530 B |       1.925 |
+| Method    | Runtime  | Series length | Mean      | Gen0   | Gen1   | Gen2   | Allocated  |
+|---------- |--------- |-------------- |---------- |------- |------- |------- |-----------:|
+| GetPath() | .NET 8.0 | 8163x8089     |  213.8 ms | 500.0  | 500.0  | 500.0  | 516.4 MB   |
+| GetPath() | .NET481  | 8163x8089     |  411.1 ms | 1000.0 | 1000.0 | 1000.0 | 516.4 MB   |
+|           |          |               |           |        |        |        |            |
+| GetPath() | .NET 8.0 | 500x500       |   1.45 ms | 498.05 | 498.05 | 498.05 |   2.0 MB   |
+| GetPath() | .NET481  | 500x500       |   1.68 ms | 498.05 | 498.05 | 498.05 |   2.0 MB   |
+|           |          |               |           |        |        |        |            |
+| GetPath() | .NET 8.0 | 10x10         |  538.0 ns | 0.247  | -      | -      |   1.5 KB   |
+| GetPath() | .NET481  | 10x10         | 1209.2 ns | 0.3557 | -      | -      |   2.2 KB   |
 
 # License
 
