@@ -4,10 +4,6 @@ Fast Dynamic Time Warping (DTW) algorithm implementation in .NET C# with a focus
 
 Reference: [Fast DTW: Toward Accurate Dynamic Time Warping in Linear Time and and Space](https://cs.fit.edu/~pkc/papers/tdm04.pdf) 
 
-Further development:
-
-- Add constrains
-
 ## Usage
 
 For double precision results:
@@ -16,7 +12,7 @@ For double precision results:
 double[] seriesA = new double[] {0, 1, 2, 3};
 double[] seriesB = new double[] {1, 2, 3, 4, 5};
 
-FastDtw.CSharp.Dtw.GetScore(seriesA, seriesB)
+FastDtw.CSharp.Dtw.GetScore(seriesA, seriesB);
 ```
 
 For single precision results:
@@ -25,8 +21,19 @@ For single precision results:
 float[] seriesA = new float[] { 41.98f, 41.65f, 42.01f, 42.35f, 44.4f };
 float[] seriesB = new float[] { 95.07f, 93.5f, 96.67f, 96.28f, 102.47f, 94.24f, 95.12f, 87.06f };
 
-FastDtw.CSharp.Dtw.GetScoreF(seriesA, seriesB)
+FastDtw.CSharp.Dtw.GetScoreF(seriesA, seriesB);
 ```
+
+To get warp path:
+
+```csharp
+double[] seriesA = new double[] {0, 1, 2, 3};
+double[] seriesB = new double[] {1, 2, 3, 4, 5};
+
+FastDtw.CSharp.Dtw.GetPath(seriesA, seriesB)
+```
+--- Performance results to be updated for version 2.0 ---
+
 
 ## Performance results
 
