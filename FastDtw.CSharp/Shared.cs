@@ -96,5 +96,20 @@ namespace FastDtw.CSharp
                 throw new ArgumentException("Array length, should be at least 2", nameof(arrayB));
             }
         }
+        
+#if NET6_0_OR_GREATER
+        internal static void ValidateLength<T>(Span<T> arrayA, Span<T> arrayB) where T : struct
+        {
+            if (arrayA.Length < 2)
+            {
+                throw new ArgumentException("Span length, should be at least 2", nameof(arrayA));
+            }
+
+            if (arrayB.Length < 2)
+            {
+                throw new ArgumentException("Span length, should be at least 2", nameof(arrayB));
+            }
+        }
+#endif
     }
 }

@@ -9,7 +9,7 @@
     <PackageTags>dtw;timeseries;fastdtw;patternrecognition;algorithms;timeseriesanalysis</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RepositoryUrl>https://github.com/kkartavenka/FastDtw.CSharp</RepositoryUrl>

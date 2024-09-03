@@ -7,16 +7,16 @@ namespace FastDtw.CSharp;
 
 public static partial class Dtw
 {
-    public static double GetScore(double[] arrayA, double[] arrayB)
+    public static double GetScore(Span<double> arrayA, Span<double> arrayB)
     {
         Shared.ValidateLength(arrayA, arrayB);
-        
+
         var aLength = arrayA.Length;
         var bLength = arrayB.Length;
         var tCostMatrix = new double[2 * bLength];
 
-        ref var arrayAZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayA);
-        ref var arrayBZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayB);
+        ref var arrayAZeroElement = ref MemoryMarshal.GetReference(arrayA);
+        ref var arrayBZeroElement = ref MemoryMarshal.GetReference(arrayB);
         ref var costMatrixZeroElement = ref MemoryMarshal.GetArrayDataReference(tCostMatrix);
 
         var previousRow = 0;
@@ -68,16 +68,21 @@ public static partial class Dtw
         return Unsafe.Add(ref costMatrixZeroElement, currentRow + bLength - 1);
     }
 
-    public static float GetScoreF(float[] arrayA, float[] arrayB)
+    public static double GetScore(double[] arrayA, double[] arrayB)
+    {
+        return GetScore(arrayA.AsSpan(), arrayB.AsSpan());
+    }
+
+    public static float GetScoreF(Span<float> arrayA, Span<float> arrayB)
     {
         Shared.ValidateLength(arrayA, arrayB);
-        
+
         var aLength = arrayA.Length;
         var bLength = arrayB.Length;
         var tCostMatrix = new float[2 * bLength];
 
-        ref var arrayAZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayA);
-        ref var arrayBZeroElement = ref MemoryMarshal.GetArrayDataReference(arrayB);
+        ref var arrayAZeroElement = ref MemoryMarshal.GetReference(arrayA);
+        ref var arrayBZeroElement = ref MemoryMarshal.GetReference(arrayB);
         ref var costMatrixZeroElement = ref MemoryMarshal.GetArrayDataReference(tCostMatrix);
 
         var previousRow = 0;
@@ -127,6 +132,11 @@ public static partial class Dtw
         }
 
         return Unsafe.Add(ref costMatrixZeroElement, currentRow + bLength - 1);
+    }
+
+    public static float GetScoreF(float[] arrayA, float[] arrayB)
+    {
+        return GetScoreF(arrayA.AsSpan(), arrayB.AsSpan());
     }
 }
 #endif
