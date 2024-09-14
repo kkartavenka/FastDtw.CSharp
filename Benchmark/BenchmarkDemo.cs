@@ -102,8 +102,8 @@ public class BenchmarkDemo {
     public double FastDtwCSharpGetScoreRunF()
     {
         return BenchmarkSequenceLength == 0 
-            ? Dtw.GetScoreF(_fArrayA, _fArrayB) 
-            : Dtw.GetScoreF(_fArrayA[0..BenchmarkSequenceLength], _fArrayB[0..BenchmarkSequenceLength]);
+            ? Dtw.GetScore(_fArrayA, _fArrayB) 
+            : Dtw.GetScore(_fArrayA[0..BenchmarkSequenceLength], _fArrayB[0..BenchmarkSequenceLength]);
     }
     
     [Benchmark(Description = "FastDtw.CSharp.GetPath")]

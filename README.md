@@ -12,7 +12,7 @@ For double precision results:
 double[] seriesA = new double[] {0, 1, 2, 3};
 double[] seriesB = new double[] {1, 2, 3, 4, 5};
 
-FastDtw.CSharp.Dtw.GetScore(seriesA, seriesB);
+Dtw.GetScore(seriesA, seriesB);
 ```
 
 For single precision results:
@@ -21,7 +21,18 @@ For single precision results:
 float[] seriesA = new float[] { 41.98f, 41.65f, 42.01f, 42.35f, 44.4f };
 float[] seriesB = new float[] { 95.07f, 93.5f, 96.67f, 96.28f, 102.47f, 94.24f, 95.12f, 87.06f };
 
-FastDtw.CSharp.Dtw.GetScoreF(seriesA, seriesB);
+Dtw.GetScoreF(seriesA, seriesB);
+```
+
+Weighted double precision DTW score. Available weighting approaches: `Multiplicative`, `ArithmeticMean`, `HarmonicMean`.:
+
+```csharp
+var seriesA = new double[] { 41.98, 41.65, 42.01, 42.35, 44.4 };
+var weightsSeriesA = new double[] { 0.5, 0.6, 0.7, 0.8, 0.9 };
+var seriesB = new double[] { 95.07, 93.5, 96.67, 96.28, 102.47, 94.24, 95.12, 87.06 };
+var weightsSeriesB new double[] { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2 };
+
+Dtw.GetWeightedScore(seriesA, seriesB, weightsSeriesA, weightsSeriesB, WeightingApproach.HarmonicMean);
 ```
 
 To get warp path:
@@ -30,7 +41,7 @@ To get warp path:
 double[] seriesA = new double[] {0, 1, 2, 3};
 double[] seriesB = new double[] {1, 2, 3, 4, 5};
 
-FastDtw.CSharp.Dtw.GetPath(seriesA, seriesB)
+Dtw.GetPath(seriesA, seriesB)
 ```
 
 ## Performance results

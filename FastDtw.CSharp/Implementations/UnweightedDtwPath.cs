@@ -1,8 +1,9 @@
 using System;
+using FastDtw.CSharp.Implementations.Shared;
 
-namespace FastDtw.CSharp
+namespace FastDtw.CSharp.Implementations
 {
-    public static partial class Dtw
+    public static class UnweightedDtwPath
     {
         public static PathResult GetPath(double[] arrayA, double[] arrayB)
         {
@@ -34,7 +35,7 @@ namespace FastDtw.CSharp
                             }
                             else
                             {
-                                lastMin = Shared.FindMinimum(
+                                lastMin = NumericHelpers.FindMinimum(
                                     ref pArrayCost[(i - 1) * bLength + j],
                                     ref pArrayCost[(i - 1) * bLength + j - 1],
                                     ref lastCalculatedCost);
@@ -50,7 +51,7 @@ namespace FastDtw.CSharp
             }
 
             return new PathResult(tCostMatrix[aLength - 1, bLength - 1],
-                Shared.GetPathFromCostMatrix(tCostMatrix, aLength, bLength));
+                DtwShared.GetPathFromCostMatrix(tCostMatrix, aLength, bLength));
         }
     }
 }

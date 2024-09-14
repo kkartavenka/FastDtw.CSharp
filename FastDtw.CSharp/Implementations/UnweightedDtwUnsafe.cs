@@ -1,13 +1,13 @@
-﻿#if NETSTANDARD2_0
 using System;
+using FastDtw.CSharp.Implementations.Shared;
 
-namespace FastDtw.CSharp
+namespace FastDtw.CSharp.Implementations
 {
-    public static partial class Dtw
+    internal static class UnweightedDtwUnsafe
     {
-        public static double GetScore(double[] arrayA, double[] arrayB)
+        internal static double GetScore(double[] arrayA, double[] arrayB)
         {
-            Shared.ValidateLength(arrayA, arrayB);
+            InputArrayValidator.ValidateLength(arrayA, arrayB);
             var aLength = arrayA.Length;
             var bLength = arrayB.Length;
             var tCostMatrix = new double[2 * bLength];
@@ -16,7 +16,7 @@ namespace FastDtw.CSharp
             var currentRow = -bLength;
             var tPathLength = 2 * bLength;
 
-            double lastMin;
+            double lastMin = 0;
             double lastCalculatedCost = 0;
 
             unsafe
@@ -31,27 +31,9 @@ namespace FastDtw.CSharp
                             currentRow = 0;
                         }
 
-                        for (int j = 0; j < bLength; j++)
+                        for (var j = 0; j < bLength; j++)
                         {
-                            if (i == 0 && j == 0)
-                            {
-                                lastMin = 0;
-                            }
-                            else if (i == 0)
-                            {
-                                lastMin = lastCalculatedCost;
-                            }
-                            else if (j == 0)
-                            {
-                                lastMin = pArrayCost[previousRow + j];
-                            }
-                            else
-                            {
-                                lastMin = Shared.FindMinimum(
-                                    ref pArrayCost[previousRow + j],
-                                    ref pArrayCost[previousRow + j - 1],
-                                    ref lastCalculatedCost);
-                            }
+                            DtwShared.UpdateLastMin(i, j, previousRow, lastCalculatedCost, pArrayCost, ref lastMin);
 
                             var absDifference = Math.Abs(pArrayA[i] - pArrayB[j]);
 
@@ -67,9 +49,9 @@ namespace FastDtw.CSharp
             }
         }
 
-        public static float GetScoreF(float[] arrayA, float[] arrayB)
+        internal static float GetScoreF(float[] arrayA, float[] arrayB)
         {
-            Shared.ValidateLength(arrayA, arrayB);
+            InputArrayValidator.ValidateLength(arrayA, arrayB);
             var aLength = arrayA.Length;
             var bLength = arrayB.Length;
             var tCostMatrix = new float[2 * bLength];
@@ -78,7 +60,7 @@ namespace FastDtw.CSharp
             var currentRow = -bLength;
             var tPathLength = 2 * bLength;
 
-            float lastMin;
+            float lastMin = 0;
             float lastCalculatedCost = 0;
 
             unsafe
@@ -95,25 +77,7 @@ namespace FastDtw.CSharp
 
                         for (int j = 0; j < bLength; j++)
                         {
-                            if (i == 0 && j == 0)
-                            {
-                                lastMin = 0;
-                            }
-                            else if (i == 0)
-                            {
-                                lastMin = lastCalculatedCost;
-                            }
-                            else if (j == 0)
-                            {
-                                lastMin = pArrayCost[previousRow + j];
-                            }
-                            else
-                            {
-                                lastMin = Shared.FindMinimumF(
-                                    ref pArrayCost[previousRow + j],
-                                    ref pArrayCost[previousRow + j - 1],
-                                    ref lastCalculatedCost);
-                            }
+                            DtwShared.UpdateLastMinF(i, j, previousRow, lastCalculatedCost, pArrayCost, ref lastMin);
 
                             var absDifference = Math.Abs(pArrayA[i] - pArrayB[j]);
 
@@ -130,4 +94,3 @@ namespace FastDtw.CSharp
         }
     }
 }
-#endif
