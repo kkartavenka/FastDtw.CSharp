@@ -38,6 +38,37 @@ namespace FastDtw.CSharp
 #endif
         }
         
+        public static double GetScore(double[] arrayA, double[] arrayB, NormalizationType normalizationType)
+        {
+            int pathLength;
+            double score;
+            if (normalizationType == NormalizationType.PathLength)
+            {
+#if NET6_0_OR_GREATER
+                var result = UnweightedDtwPath.GetPath(arrayA, arrayB);
+                pathLength = result.Path.Count;
+                score = result.Score;
+#elif NETSTANDARD2_0
+                var result = UnweightedDtwPath.GetPath(arrayA, arrayB);
+                pathLength = result.Path.Count;
+                score = result.Score;
+#endif
+            }
+            else
+            {
+                pathLength = normalizationType == NormalizationType.MaxSeriesLength
+                    ? Math.Max(arrayA.Length, arrayB.Length)
+                    : arrayA.Length + arrayB.Length; 
+#if NET6_0_OR_GREATER
+                score = UnweightedDtw.GetScore(arrayA, arrayB);
+#elif NETSTANDARD2_0
+                score = UnweightedDtwUnsafe.GetScore(arrayA, arrayB);
+#endif          
+            }
+
+            return score / pathLength;
+        }
+        
         public static float GetScore(float[] arrayA, float[] arrayB)
         {
 #if NET6_0_OR_GREATER

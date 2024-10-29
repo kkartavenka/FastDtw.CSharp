@@ -13,6 +13,9 @@ double[] seriesA = new double[] {0, 1, 2, 3};
 double[] seriesB = new double[] {1, 2, 3, 4, 5};
 
 Dtw.GetScore(seriesA, seriesB);
+
+// Starting from 2.2.0 version, the score can be normalized, e.g.:
+Dtw.GetScore(seriesA, seriesB, NormalizationType.PathLength);
 ```
 
 For single precision results:

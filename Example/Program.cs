@@ -5,8 +5,9 @@ var b = new double[] { 95.07, 93.5, 96.67, 96.28, 102.47, 94.24, 95.12, 87.06, 8
 
 // When the Warp path is not important
 Console.WriteLine($"Unweighted score: {Dtw.GetScore(a, b)}");
+Console.WriteLine($"Unweighted score, normalized by the path length: {Dtw.GetScore(a, b, NormalizationType.PathLength)}");
 
-// When we are interest in the Warp path
+// When we are interested in the Warp path
 var scoreWithPath = Dtw.GetPath(a, b);
 Console.WriteLine($"Unweighted score (from path): {scoreWithPath.Score}");
 var pathStringified = string.Join(", ", scoreWithPath.Path.Select(x => $"({x.Item1}, {x.Item2})"));
