@@ -7,6 +7,9 @@
     <Authors>Kostya Kartavenka</Authors>
     <PackageProjectUrl>https://github.com/kkartavenka/FastDtw.CSharp</PackageProjectUrl>
     <PackageTags>dtw;timeseries;fastdtw;patternrecognition;algorithms;timeseriesanalysis</PackageTags>
+    <Description>Fast Dynamic Time Warping (DTW) implementation in C# with a focus on performance and low allocation. Provides unconstrained and Sakoe-Chiba banded scores in single and double precision, weighted DTW, score normalization, warp path extraction, batch and pairwise-matrix scoring, and a nearest-neighbour search pruned with the LB_Keogh lower bound.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Version>2.3.0</Version>
@@ -19,6 +22,10 @@
   <PropertyGroup>
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Lets the test project diff the new GetPath against the dense reference implementation. -->
