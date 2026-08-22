@@ -2,7 +2,7 @@
 
 Fast Dynamic Time Warping (DTW) algorithm implementation in .NET C# with a focus on performance.
 
-Reference: [Fast DTW: Toward Accurate Dynamic Time Warping in Linear Time and and Space](https://cs.fit.edu/~pkc/papers/tdm04.pdf) 
+Reference: [Fast DTW: Toward Accurate Dynamic Time Warping in Linear Time and Space](https://cs.fit.edu/~pkc/papers/tdm04.pdf) 
 
 ## Usage
 
@@ -24,16 +24,16 @@ For single precision results:
 float[] seriesA = new float[] { 41.98f, 41.65f, 42.01f, 42.35f, 44.4f };
 float[] seriesB = new float[] { 95.07f, 93.5f, 96.67f, 96.28f, 102.47f, 94.24f, 95.12f, 87.06f };
 
-Dtw.GetScoreF(seriesA, seriesB);
+Dtw.GetScore(seriesA, seriesB);
 ```
 
-Weighted double precision DTW score. Available weighting approaches: `Multiplicative`, `ArithmeticMean`, `HarmonicMean`.:
+Weighted double precision DTW score. Available weighting approaches: `Multiplicative`, `ArithmeticMean`, `HarmonicMean`:
 
 ```csharp
 var seriesA = new double[] { 41.98, 41.65, 42.01, 42.35, 44.4 };
 var weightsSeriesA = new double[] { 0.5, 0.6, 0.7, 0.8, 0.9 };
 var seriesB = new double[] { 95.07, 93.5, 96.67, 96.28, 102.47, 94.24, 95.12, 87.06 };
-var weightsSeriesB new double[] { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2 };
+var weightsSeriesB = new double[] { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2 };
 
 Dtw.GetWeightedScore(seriesA, seriesB, weightsSeriesA, weightsSeriesB, WeightingApproach.HarmonicMean);
 ```
@@ -44,8 +44,45 @@ To get warp path:
 double[] seriesA = new double[] {0, 1, 2, 3};
 double[] seriesB = new double[] {1, 2, 3, 4, 5};
 
-Dtw.GetPath(seriesA, seriesB)
+Dtw.GetPath(seriesA, seriesB);
 ```
+
+Starting from 2.3.0 version, the score can be constrained by a Sakoe-Chiba band. The warping path is not allowed to deviate from the diagonal further than the given band width, which reduces the complexity from O(n*m) to O(n*bandWidth):
+
+```csharp
+double[] seriesA = new double[] {0, 1, 2, 3};
+double[] seriesB = new double[] {1, 2, 3, 4, 5};
+
+Dtw.GetScore(seriesA, seriesB, 100);
+```
+
+One must consider that the constrained score is a different measure, and it is greater than or equal to the unconstrained one. The band is widened by the length difference automatically, so a warping path always exists.
+
+Starting from 2.3.0 version, several series can be scored in a single call. Subjects of equal length are processed in SIMD lanes and the work is spread over the available cores. The returned scores are identical to the ones obtained by calling `.GetScore()` in a loop. The batch methods are available when targeting .NET 6.0 and higher:
+
+```csharp
+double[] query = new double[] {0, 1, 2, 3};
+double[][] subjects = new double[][] { ... };
+
+double[] scores = Dtw.GetScores(query, subjects);
+```
+
+To get the complete pairwise distance matrix, which is symmetric and has a zero diagonal:
+
+```csharp
+double[,] matrix = Dtw.GetScoreMatrix(series);
+```
+
+To find the closest series, LB_Keogh lower bound is used to skip the candidates which cannot win:
+
+```csharp
+double[] query = new double[] {0, 1, 2, 3};
+double[][] subjects = new double[][] { ... };
+
+int index = Dtw.GetNearestNeighbor(query, subjects, 16, out double distance);
+```
+
+The returned index is exactly the one obtained by scoring every subject with `.GetScore()` and taking the minimum, since the bound only removes the candidates whose distance is provably no better than the incumbent. The search is constrained by the band, and all series are required to be of the same length. The bound itself is available as `.GetLowerBound()`. It should be noted that the bound is tight on smooth series, and it is weak on noisy ones, where almost nothing is skipped.
 
 ## Performance results
 
@@ -74,7 +111,7 @@ The comparison was performed to the following packages: [FastDtw (v.1.1.4)](http
 | ADN.TimeSeries             | 10x10         | 2,648.8 ns  | 21.1  | 0.252   | -       | -       |  2.11 KB   | 5.4          |
 | NDtw                       | 10x10         | 1,192.5 ns  | 9.5   | 0.696   | -       | -       |  5.83 KB   | 14.9         |
 
-One must consider which method to use to get the best performance. Specifically, if you are interested in a DTW warp score only `.GetScore()` is sufficient since it has the smallest memory allocation and the fastest processing time. To get the warp path with `.GetPath()` method, the whole cost matrix is created and stored which requires larger allocations. Additionally, `.GetScoreF()` will decrease memory allocations since single precision variable is used instead of double. The implementation is slightly different when targeting .NET 6.0 and higher compared to .NET Standard. The results are summarized below on Intel Core i7-9750H CPU, Windows 11):
+One must consider which method to use to get the best performance. Specifically, if you are interested in a DTW warp score only `.GetScore()` is sufficient since it has the smallest memory allocation and the fastest processing time. The `.GetPath()` method still requires larger allocations, since the step taken in every cell has to be retained until the path is traced back. Additionally, the single precision overload will decrease memory allocations since single precision variable is used instead of double. The implementation is slightly different when targeting .NET 6.0 and higher compared to .NET Standard. The results are summarized below on Intel Core i7-9750H CPU, Windows 11):
 
 | Method     | Runtime  | Series length | Mean      | Gen0   | Allocated  |
 |----------- |--------- |-------------- |---------- |------- |-----------:|
@@ -98,6 +135,19 @@ One must consider which method to use to get the best performance. Specifically,
 |           |          |               |           |        |        |        |            |
 | GetPath() | .NET 8.0 | 10x10         |  538.0 ns | 0.247  | -      | -      |   1.5 KB   |
 | GetPath() | .NET481  | 10x10         | 1209.2 ns | 0.3557 | -      | -      |   2.2 KB   |
+
+### Warp path memory
+
+Up to 2.2.0 version the complete cost matrix was kept as `double[n, m]`, although it was only needed so that the backtracking step could determine which of the three predecessors had won. Starting from 2.3.0 version that decision is recorded directly as a single byte per cell, and only two rolling rows of costs are retained. The returned score and the returned path are unchanged. The measurements below were taken directly rather than with BenchmarkDotNet, on Apple M2 (.NET 10.0):
+
+| Series length | Allocated, 2.2.0 | Allocated, 2.3.0 | Mean, 2.2.0 | Mean, 2.3.0 |
+|-------------- |----------------: |----------------: |-----------: |-----------: |
+| 8163x8089     |        504.3 MB  |         63.6 MB  |   118.9 ms  |   110.5 ms  |
+| 4000x4000     |        122.3 MB  |         15.5 MB  |    28.1 ms  |    22.9 ms  |
+| 2000x2000     |         30.6 MB  |          4.0 MB  |     7.1 ms  |     5.4 ms  |
+| 500x500       |          1.9 MB  |          0.3 MB  |     0.4 ms  |     0.4 ms  |
+
+It should be noted that the allocation is reduced by a factor of eight, whereas the processing time is affected only marginally, since at large series lengths the method is limited by writing the step matrix rather than by the computation itself. The `.GetPath()` rows of the tables above were obtained before this change, and they still reflect the 2.2.0 behaviour.
 
 # License
 
