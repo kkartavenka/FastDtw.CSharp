@@ -3,7 +3,7 @@ using FastDtw.CSharp.Implementations;
 
 namespace FastDtw.CSharp
 {
-    public static class Dtw
+    public static partial class Dtw
     {
 #if NET6_0_OR_GREATER
         public static double GetScore(Span<double> arrayA, Span<double> arrayB)
@@ -32,7 +32,7 @@ namespace FastDtw.CSharp
         public static double GetScore(double[] arrayA, double[] arrayB)
         {
 #if NET6_0_OR_GREATER
-            return UnweightedDtw.GetScore(arrayA, arrayB);
+            return UnweightedDtwSimd.GetScore(arrayA, arrayB);
 #elif NETSTANDARD2_0
             return UnweightedDtwUnsafe.GetScore(arrayA, arrayB);
 #endif
@@ -60,7 +60,7 @@ namespace FastDtw.CSharp
                     ? Math.Max(arrayA.Length, arrayB.Length)
                     : arrayA.Length + arrayB.Length; 
 #if NET6_0_OR_GREATER
-                score = UnweightedDtw.GetScore(arrayA, arrayB);
+                score = UnweightedDtwSimd.GetScore(arrayA, arrayB);
 #elif NETSTANDARD2_0
                 score = UnweightedDtwUnsafe.GetScore(arrayA, arrayB);
 #endif          
@@ -72,7 +72,7 @@ namespace FastDtw.CSharp
         public static float GetScore(float[] arrayA, float[] arrayB)
         {
 #if NET6_0_OR_GREATER
-            return UnweightedDtw.GetScoreF(arrayA, arrayB);
+            return UnweightedDtwSimd.GetScoreF(arrayA, arrayB);
 #elif NETSTANDARD2_0
             return UnweightedDtwUnsafe.GetScoreF(arrayA, arrayB);
 #endif
