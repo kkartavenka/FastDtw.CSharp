@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,13 +27,18 @@ namespace FastDtw.CSharp.Test
             {
                 var splittedString = line.Split(',');
 
-                if (double.TryParse(splittedString[0], out double varA))
+                // Test.csv uses '.' as the decimal separator. Parsing with the ambient culture reads
+                // "41.98" as 4198 wherever ',' is the decimal separator (for example en-DE), scaling
+                // every value by 100. The cross-validation tests still passed because both sides were
+                // fed the same corrupted data.
+                if (double.TryParse(splittedString[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double varA))
                 {
                     arrayAF[idxA] = (float)varA;
                     arrayA[idxA++] = varA;
                 }
 
-                if (double.TryParse(splittedString[1], out double varB))
+                if (splittedString.Length > 1
+                    && double.TryParse(splittedString[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double varB))
                 {
                     arrayBF[idxB] = (float)varB;
                     arrayB[idxB++] = varB;
@@ -66,6 +72,21 @@ namespace FastDtw.CSharp.Test
         public void Init()
         {
             (_arrayA, _arrayB, _arrayAF, _arrayBF) = GetData();
+        }
+
+        [TestMethod]
+        public void TestDataParsesUnderAnyCulture()
+        {
+            // Column A has 74 blank cells, so it is shorter than column B by design.
+            Assert.AreEqual(8089, _arrayA.Length, "unexpected length for series A");
+            Assert.AreEqual(8163, _arrayB.Length, "unexpected length for series B");
+
+            // The values themselves are the point: under a ',' decimal-separator culture an ambient
+            // parse yields 4198 here instead of 41.98.
+            Assert.AreEqual(41.98, _arrayA[0], 1e-9);
+            Assert.AreEqual(95.07, _arrayB[0], 1e-9);
+            Assert.AreEqual(41.98f, _arrayAF[0], 1e-4f);
+            Assert.AreEqual(95.07f, _arrayBF[0], 1e-4f);
         }
 
         [TestMethod]
